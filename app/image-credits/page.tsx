@@ -1,5 +1,5 @@
 import LegalPage from "@/components/LegalPage";
-import { IMAGE_CREDITS } from "@/lib/credits";
+import { getUsedPhotos } from "@/lib/cms";
 import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
@@ -9,19 +9,25 @@ export const metadata = pageMetadata({
   noindex: true,
 });
 
-export default function ImageCreditsPage() {
+export default async function ImageCreditsPage() {
+  const photos = await getUsedPhotos();
   return (
     <LegalPage title="Image Credits" updated="November 2026" draft={false}>
       <p>
-        Photographs on this website are third-party works used under the licences below. They illustrate product
-        categories and regions and do not depict DAI Trade Hub facilities, suppliers or partners. Images were resized
-        and recompressed for the web.
+        Photographs on this website are used under the licences below. They illustrate product categories and regions
+        and do not depict DAI Trade Hub facilities, suppliers or partners. Images may be resized and recompressed for
+        the web.
       </p>
       <ul>
-        {IMAGE_CREDITS.map((c) => (
-          <li key={c.file}>
-            <a href={c.source} className="underline" rel="noopener noreferrer">{c.title}</a> by {c.author}, licensed{" "}
-            <a href={c.licenseUrl} className="underline" rel="noopener noreferrer license">{c.license}</a>.
+        {photos.map((p) => (
+          <li key={p.src}>
+            {p.sourceUrl ? (
+              <a href={p.sourceUrl} className="underline" rel="noopener noreferrer">{p.alt}</a>
+            ) : (
+              p.alt
+            )}
+            {p.credit ? ` by ${p.credit}` : ""}
+            {p.licence ? `, licensed ${p.licence}` : ""}.
           </li>
         ))}
       </ul>

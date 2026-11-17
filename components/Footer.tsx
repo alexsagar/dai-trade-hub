@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import { COMPANY } from "@/lib/site";
+import { getSiteSettings } from "@/lib/cms";
+import { telHref } from "@/lib/site";
 
 const COLUMNS = [
   {
@@ -30,13 +31,14 @@ const COLUMNS = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const s = await getSiteSettings();
   return (
     <footer className="bg-ink text-white/75">
       <div className="container-x grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.3fr]">
         <div>
           <Logo className="w-[130px]" />
-          <p className="mt-5 max-w-xs text-sm leading-relaxed">{COMPANY.tagline}</p>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed">{s.tagline}</p>
         </div>
 
         {COLUMNS.map((col) => (
@@ -56,19 +58,19 @@ export default function Footer() {
           <h2 className="font-sans text-xs font-semibold tracking-[0.18em] text-gold uppercase">Contact</h2>
           <address className="mt-4 space-y-2.5 text-sm not-italic">
             <p>
-              {COMPANY.name}
+              {s.name}
               <br />
-              {COMPANY.street}, {COMPANY.city} {COMPANY.postalCode}, {COMPANY.country}
+              {s.street}, {s.city} {s.postalCode}, {s.country}
             </p>
-            <p><a href={COMPANY.phoneHref} className="hover:text-white">{COMPANY.phoneDisplay} (Nepal)</a></p>
-            <p><a href={`mailto:${COMPANY.email}`} className="hover:text-white">{COMPANY.email}</a></p>
-            <p><a href={`mailto:${COMPANY.tradeEmail}`} className="hover:text-white">{COMPANY.tradeEmail}</a></p>
+            <p><a href={telHref(s.phoneIntl)} className="hover:text-white">{s.phoneDisplay} (Nepal)</a></p>
+            <p><a href={`mailto:${s.email}`} className="hover:text-white">{s.email}</a></p>
+            <p><a href={`mailto:${s.tradeEmail}`} className="hover:text-white">{s.tradeEmail}</a></p>
           </address>
         </div>
       </div>
       <div className="border-t border-white/10">
         <div className="container-x flex flex-col gap-3 py-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {COMPANY.name}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {s.name}. All rights reserved.</p>
           <ul className="flex gap-5">
             <li><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
             <li><Link href="/terms" className="hover:text-white">Terms &amp; Conditions</Link></li>

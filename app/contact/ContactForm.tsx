@@ -12,7 +12,7 @@ type Status = { state: "idle" | "sending" } | { state: "sent" } | { state: "erro
 const field =
   "mt-1.5 w-full rounded-sm border border-line bg-white px-4 py-3 text-ink placeholder:text-muted/70 focus:border-ink focus:outline-none aria-[invalid=true]:border-red-700";
 
-export default function ContactForm() {
+export default function ContactForm({ successTitle, successMessage }: { successTitle: string; successMessage: string }) {
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const [errors, setErrors] = useState<Errors>({});
   const [inquiryType, setInquiryType] = useState("");
@@ -61,11 +61,8 @@ export default function ContactForm() {
     return (
       <div ref={resultRef} tabIndex={-1} role="status" className="rounded-sm border border-line bg-cream p-8 sm:p-10">
         <CheckCircle2 className="h-10 w-10 text-gold-deep" aria-hidden />
-        <h2 className="mt-4 text-2xl">Inquiry sent</h2>
-        <p className="mt-3 leading-relaxed">
-          Thank you for contacting DAI Trade Hub. Your inquiry has been received. Our team will review your message and
-          respond as soon as possible.
-        </p>
+        <h2 className="mt-4 text-2xl">{successTitle}</h2>
+        <p className="mt-3 leading-relaxed">{successMessage}</p>
         <button type="button" className="btn-outline mt-8" onClick={() => setStatus({ state: "idle" })}>
           Send another inquiry
         </button>

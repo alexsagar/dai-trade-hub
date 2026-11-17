@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
-import type { Photo } from "@/lib/content";
+import type { Photo } from "@/lib/cms/types";
 
 export function JsonLd({ data }: { data: object }) {
   return (
@@ -125,7 +125,7 @@ export function CtaBand({
   title: string;
   text: string;
   primary: { label: string; href: string };
-  secondary?: { label: string; href: string };
+  secondary?: { label: string; href: string } | null;
 }) {
   return (
     <section className="bg-ink text-white">
