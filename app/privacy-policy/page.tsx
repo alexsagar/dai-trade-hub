@@ -57,7 +57,7 @@ export default function PrivacyPolicyPage() {
         <h2 className="text-2xl font-heading text-charcoal mt-8 mb-4">5. Contact Us</h2>
         <p>
           If you have any questions about this Privacy Policy, please contact us at: <br />
-          <strong>Email:</strong> info@daitradehub.com <br />
+          <strong>Email:</strong> info@dainepal.com <br />
           <strong>Address:</strong> Panchakanya Marga, Kathmandu 44600, Nepal
         </p>
       </div>
