@@ -15,8 +15,10 @@ function rateLimited(ip: string) {
   const now = Date.now();
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
   recent.push(now);
+  // Re-insert so Map order tracks recency, then evict the stalest entry when full.
+  hits.delete(ip);
   hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
+  if (hits.size > 5000) hits.delete(hits.keys().next().value!);
   return recent.length > MAX_PER_WINDOW;
 }
 
@@ -25,7 +27,12 @@ const fail = (status: number, error: string, extra?: object) => NextResponse.jso
 export async function POST(req: Request) {
   if (!req.headers.get("content-type")?.includes("application/json")) return fail(415, "Unsupported request format.");
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  // Vercel sets these; the first x-forwarded-for entry is client-controlled and only a fallback.
+  const ip =
+    req.headers.get("x-vercel-forwarded-for") ||
+    req.headers.get("x-real-ip") ||
+    req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
+    "unknown";
   if (rateLimited(ip)) return fail(429, "Too many inquiries from this connection. Please try again later.");
 
   let body: Record<string, unknown>;
