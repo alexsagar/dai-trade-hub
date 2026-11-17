@@ -1,12 +1,10 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { IS_INDEXABLE, SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
+  if (!IS_INDEXABLE) return { rules: { userAgent: "*", disallow: "/" } };
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/admin/"],
-    },
-    sitemap: "https://daitradehub.com/sitemap.xml",
+    rules: { userAgent: "*", allow: "/", disallow: "/api/" },
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

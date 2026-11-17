@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DAI Trade Hub website
 
-## Getting Started
+Corporate site for DAI Trade Hub Pvt. Ltd. — Next.js 16 (App Router), Tailwind CSS 4, deployed on Vercel.
+Approved copy comes from `DAI_TRADE_HUB_CONTENT_SOURCE.md`; page text lives in `lib/content.ts`.
 
-First, run the development server:
+## Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev        # local dev server
+npm run build      # production build
+npm run typecheck  # tsc --noEmit
+npm test           # node:test unit tests (inquiry validation)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment variables
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical domain. Defaults to `https://dai-trade-hub.vercel.app`. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` | Mail server for the inquiry form. Required; without them the form reports that the inquiry was **not** sent. |
+| `SMTP_FROM_EMAIL` | Sender address (defaults to `SMTP_USER`). |
+| `CONTACT_TO_EMAIL` / `TRADE_TO_EMAIL` | Recipients. Default `info@dainepal.com` / `trade@dainepal.com` (import, export, sourcing and distribution inquiries go to trade). |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Indexing is enabled only when `VERCEL_ENV=production`; previews and local builds send `noindex` and a disallow-all `robots.txt`.
 
-## Learn More
+## Contact form protection
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Server-side validation and length limits, HTML escaping, newline stripping in single-line fields, a honeypot field,
+a minimum fill time, and a per-instance rate limit (5 per 10 minutes per IP). For stronger protection, add a Vercel
+Firewall rate-limit rule on `/api/contact`.

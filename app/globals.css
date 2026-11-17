@@ -1,63 +1,118 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap');
 @import "tailwindcss";
 
-/* === DAI TRADE HUB — CORPORATE DESIGN SYSTEM === */
-
+/* === DAI Trade Hub design tokens === */
 @theme {
-  /* Brand Colors */
-  --color-forest: #1B4332;
-  --color-forest-dark: #0B2B1F;
-  --color-forest-light: #2D6A4F;
-  --color-forest-muted: #40916C;
+  --color-ink: #0f1d2b;
+  --color-ink-soft: #1d2f42;
+  --color-gold: #c99a3b;
+  --color-gold-deep: #8a6420; /* AA contrast on light surfaces */
+  --color-gold-pale: #f3e7cc;
+  --color-cream: #f7f4ee;
+  --color-line: #e3ddd1;
+  --color-body: #364352;
+  --color-muted: #5b6672;
 
-  /* Neutrals */
-  --color-charcoal: #1A1A1A;
-  --color-dark: #333333;
-  --color-muted: #5C5C5C;
-  --color-subtle: #8A8A8A;
-  --color-border: #E0DDD5;
-  --color-surface: #F7F6F3;
-  --color-warm-white: #FAFAF8;
-
-  /* Accents */
-  --color-earth: #8B7355;
-  --color-wheat: #C4A97D;
-  --color-sand: #E8DFD0;
-
-  /* Typography */
-  --font-heading: 'DM Serif Display', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-/* === Base Styles === */
+@layer base {
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: var(--font-body);
-  color: var(--color-dark);
-  overflow-x: hidden;
+  font-family: var(--font-sans);
+  color: var(--color-body);
+  background: #fff;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
-  background-color: var(--color-forest);
-  color: white;
+  background: var(--color-gold-pale);
+  color: var(--color-ink);
 }
 
-/* === Scrollbar === */
-::-webkit-scrollbar {
-  width: 8px;
+:focus-visible {
+  outline: 2px solid var(--color-gold-deep);
+  outline-offset: 3px;
 }
-::-webkit-scrollbar-track {
-  background: var(--color-surface);
 }
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
+
+/* Subtle entrance motion, CSS only */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-subtle);
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise-2 {
+  animation-delay: 0.12s;
+}
+.rise-3 {
+  animation-delay: 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@utility container-x {
+  @apply mx-auto w-full max-w-[1200px] px-5 sm:px-8;
+}
+
+@utility eyebrow {
+  @apply text-xs font-semibold tracking-[0.18em] uppercase text-gold-deep;
+}
+
+@utility btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-sm font-semibold transition-colors bg-ink text-white hover:bg-ink-soft;
+}
+
+@utility btn-gold {
+  @apply inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-sm font-semibold transition-colors bg-gold text-ink hover:bg-gold-pale;
+}
+
+@utility btn-outline {
+  @apply inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-sm font-semibold transition-colors border border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-white;
+}
+
+@utility btn-outline-light {
+  @apply inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-sm font-semibold transition-colors border border-white/40 text-white hover:bg-white hover:text-ink;
+}
+
+@utility h-section {
+  @apply text-3xl leading-tight sm:text-4xl;
+}
+
+@utility lead {
+  @apply text-lg leading-relaxed text-muted;
 }
