@@ -5,8 +5,10 @@ import type { Photo } from "./cms/types";
 // Production URL is configurable; falls back to the current Vercel production domain.
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://dai-trade-hub.vercel.app").replace(/\/$/, "");
 
-// Only the production deployment may be indexed. Previews and local builds are noindex.
-export const IS_INDEXABLE = process.env.VERCEL_ENV === "production";
+// Client-review phase: the whole site is noindex everywhere, including production.
+// Indexing needs an explicit opt-in (SITE_INDEXING=enabled on the production deployment);
+// a routine redeploy can never turn it on. Kept in sync with next.config.mjs.
+export const IS_INDEXABLE = process.env.SITE_INDEXING === "enabled" && process.env.VERCEL_ENV === "production";
 
 // Static company details: used where content must not depend on the CMS (API routes,
 // legal pages). Public pages read the editable copy via getSiteSettings().

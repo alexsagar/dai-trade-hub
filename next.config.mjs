@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const isDev = process.env.NODE_ENV !== "production";
+// Same rule as IS_INDEXABLE in lib/site.ts: noindex unless explicitly enabled on production.
+const indexable = process.env.SITE_INDEXING === "enabled" && process.env.VERCEL_ENV === "production";
 // The hosted Studio frames the site for Visual Editing; nothing else may frame it.
 const studioOrigin = process.env.NEXT_PUBLIC_SANITY_STUDIO_URL ? new URL(process.env.NEXT_PUBLIC_SANITY_STUDIO_URL).origin : "";
 const frameAncestors = [studioOrigin, isDev && "http://localhost:3333"].filter(Boolean).join(" ") || "'none'";
@@ -44,6 +46,7 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+          ...(indexable ? [] : [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]),
         ],
       },
     ];

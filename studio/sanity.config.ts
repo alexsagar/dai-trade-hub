@@ -7,10 +7,15 @@ import { structure } from "./structure";
 import { resolve } from "./presentation";
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "";
-// The website deployment the Presentation tool previews (a Vercel preview URL for development content).
-const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || "http://localhost:3000";
+// The website each workspace previews in the Presentation tool: the live site reads "production",
+// a preview deployment or localhost reads "development".
+const previewUrls = {
+  production: process.env.SANITY_STUDIO_PRODUCTION_URL || "https://dai-trade-hub.vercel.app",
+  development: process.env.SANITY_STUDIO_PREVIEW_URL || "http://localhost:3000",
+};
 
 function workspace(dataset: "development" | "production", title: string): WorkspaceOptions {
+  const previewUrl = previewUrls[dataset];
   return {
     name: dataset,
     basePath: `/${dataset}`,
