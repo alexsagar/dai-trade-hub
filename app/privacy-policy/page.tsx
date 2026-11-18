@@ -1,5 +1,6 @@
 import LegalPage from "@/components/LegalPage";
-import { COMPANY, pageMetadata } from "@/lib/site";
+import { getSiteSettings } from "@/lib/cms";
+import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   path: "/privacy-policy",
@@ -8,7 +9,8 @@ export const metadata = pageMetadata({
   noindex: true,
 });
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const COMPANY = await getSiteSettings({ stega: false });
   return (
     <LegalPage title="Privacy Policy" updated="November 2026">
       <p>

@@ -3,7 +3,7 @@
 All photographs live in `public/images/photos/` and were sourced from Wikimedia Commons under the licences below.
 Each was resized to 1600px wide and recompressed (JPEG, quality 78); no other edits. `public/og-image.jpg` is a
 1200×630 crop of `hero-meeting.jpg` (CC0). Attribution is published on the site at `/image-credits` (data in
-`lib/credits.ts`).
+`lib/cms/defaults.ts`; CMS images carry their own credit fields).
 
 The images illustrate product categories and regions only. None depicts DAI Trade Hub facilities, suppliers,
 partners or confirmed stock.

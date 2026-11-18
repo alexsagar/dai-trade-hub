@@ -1,37 +1,23 @@
 import type { Metadata } from "next";
+import { SITE_SETTINGS } from "./cms/defaults";
+import type { Photo } from "./cms/types";
 
 // Production URL is configurable; falls back to the current Vercel production domain.
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://dai-trade-hub.vercel.app").replace(/\/$/, "");
 
-// Only the production deployment may be indexed. Previews and local builds are noindex.
-export const IS_INDEXABLE = process.env.VERCEL_ENV === "production";
+// Client-review phase: the whole site is noindex everywhere, including production.
+// Indexing needs an explicit opt-in (SITE_INDEXING=enabled on the production deployment);
+// a routine redeploy can never turn it on. Kept in sync with next.config.mjs.
+export const IS_INDEXABLE = process.env.SITE_INDEXING === "enabled" && process.env.VERCEL_ENV === "production";
 
-export const COMPANY = {
-  name: "DAI Trade Hub Pvt. Ltd.",
-  shortName: "DAI Trade Hub",
-  tagline: "Connecting Markets. Creating Opportunities. Building Global Partnerships.",
-  street: "Panchakanya Marga",
-  city: "Kathmandu",
-  postalCode: "44600",
-  country: "Nepal",
-  countryCode: "NP",
-  phoneDisplay: "01-5107439",
-  phoneHref: "tel:+97715107439",
-  phoneIntl: "+977-1-5107439",
-  email: "info@dainepal.com",
-  tradeEmail: "trade@dainepal.com",
-} as const;
+// Static company details: used where content must not depend on the CMS (API routes,
+// legal pages). Public pages read the editable copy via getSiteSettings().
+export const COMPANY = SITE_SETTINGS;
 
-export const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Products", href: "/products" },
-  { label: "Global Trade", href: "/global-trade" },
-  { label: "Retail Branding", href: "/retail-branding" },
-  { label: "Services", href: "/services" },
-  { label: "Partnerships", href: "/partnerships" },
-  { label: "Contact Us", href: "/contact" },
-] as const;
+export const telHref = (phoneIntl: string) => `tel:${phoneIntl.replace(/[^+\d]/g, "")}`;
+
+// Built-in page list for the sitemap and 404 page. The header menu reads the editable copy.
+export const NAV_LINKS = SITE_SETTINGS.navigation;
 
 export const OG_IMAGE = { url: "/og-image.jpg", width: 1200, height: 630, alt: "DAI Trade Hub — international trading and business development" };
 
@@ -40,19 +26,22 @@ export function pageMetadata({
   title,
   description,
   noindex = false,
+  ogImage,
 }: {
   path: string;
   title: string;
   description: string;
   noindex?: boolean;
+  ogImage?: Photo | null;
 }): Metadata {
+  const image = ogImage ? { url: ogImage.src, width: ogImage.width, height: ogImage.height, alt: ogImage.alt } : OG_IMAGE;
   return {
     title,
     description,
     alternates: { canonical: path },
     // openGraph/twitter objects replace (not merge with) the layout's, so repeat the shared fields.
-    openGraph: { title, description, url: path, type: "website", siteName: COMPANY.shortName, locale: "en_US", images: [OG_IMAGE] },
-    twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE.url] },
+    openGraph: { title, description, url: path, type: "website", siteName: COMPANY.shortName, locale: "en_US", images: [image] },
+    twitter: { card: "summary_large_image", title, description, images: [image.url] },
     ...(noindex && { robots: { index: false, follow: true } }),
   };
 }

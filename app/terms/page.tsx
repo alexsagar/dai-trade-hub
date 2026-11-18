@@ -1,6 +1,7 @@
 import Link from "next/link";
 import LegalPage from "@/components/LegalPage";
-import { COMPANY, pageMetadata } from "@/lib/site";
+import { getSiteSettings } from "@/lib/cms";
+import { pageMetadata } from "@/lib/site";
 
 export const metadata = pageMetadata({
   path: "/terms",
@@ -9,7 +10,8 @@ export const metadata = pageMetadata({
   noindex: true,
 });
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const COMPANY = await getSiteSettings({ stega: false });
   return (
     <LegalPage title="Terms & Conditions" updated="November 2026">
       <p>By using this website you agree to the terms below.</p>

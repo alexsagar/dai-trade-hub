@@ -5,9 +5,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import Logo from "@/components/Logo";
-import { NAV_LINKS } from "@/lib/site";
+import type { Cta } from "@/lib/cms/types";
 
-export default function Header() {
+export default function Header({
+  primaryCta,
+  secondaryCta,
+  links,
+  homeLabel,
+}: {
+  primaryCta: Cta;
+  secondaryCta: Cta;
+  links: Cta[];
+  homeLabel: string;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -39,14 +49,14 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-ink text-white">
       <div className="container-x !max-w-[1360px] flex h-[72px] items-center justify-between gap-6">
-        <Link href="/" className="shrink-0" aria-label="DAI Trade Hub home">
+        <Link href="/" className="shrink-0" aria-label={homeLabel}>
           <Logo className="w-[120px]" />
         </Link>
 
         <nav aria-label="Main" className="hidden xl:block">
           <ul className="flex items-center gap-5 text-[0.9rem] whitespace-nowrap">
-            {NAV_LINKS.map((l) => (
-              <li key={l.href}>
+            {links.map((l, i) => (
+              <li key={i}>
                 <Link
                   href={l.href}
                   aria-current={isActive(l.href) ? "page" : undefined}
@@ -60,8 +70,8 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 whitespace-nowrap min-[1400px]:flex">
-          <Link href="/products" className="btn-outline-light !px-4 !py-2.5">Explore Products</Link>
-          <Link href="/partnerships" className="btn-gold !px-4 !py-2.5">Become a Partner</Link>
+          <Link href={secondaryCta.href} className="btn-outline-light !px-4 !py-2.5">{secondaryCta.label}</Link>
+          <Link href={primaryCta.href} className="btn-gold !px-4 !py-2.5">{primaryCta.label}</Link>
         </div>
 
         <button
@@ -85,8 +95,8 @@ export default function Header() {
       >
         <nav aria-label="Mobile" className="container-x py-6">
           <ul className="divide-y divide-white/10">
-            {NAV_LINKS.map((l) => (
-              <li key={l.href}>
+            {links.map((l, i) => (
+              <li key={i}>
                 <Link
                   href={l.href}
                   aria-current={isActive(l.href) ? "page" : undefined}
@@ -98,8 +108,8 @@ export default function Header() {
             ))}
           </ul>
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            <Link href="/products" className="btn-outline-light">Explore Products</Link>
-            <Link href="/partnerships" className="btn-gold">Become a Partner</Link>
+            <Link href={secondaryCta.href} className="btn-outline-light">{secondaryCta.label}</Link>
+            <Link href={primaryCta.href} className="btn-gold">{primaryCta.label}</Link>
           </div>
         </nav>
       </div>

@@ -1,42 +1,29 @@
 import { CheckList, CtaBand, Heading, JsonLd, PageHero, Photo, Section } from "@/components/ui";
-import { COOPERATION_MODELS, COORDINATION_ROLE, FROM_NEPAL, PHOTOS, TO_NEPAL } from "@/lib/content";
-import { breadcrumbJsonLd, pageMetadata } from "@/lib/site";
+import { cmsMetadata, getPage } from "@/lib/cms";
+import { breadcrumbJsonLd } from "@/lib/site";
 
-export const metadata = pageMetadata({
-  path: "/global-trade",
-  title: "Global Trade & Business Cooperation",
-  description:
-    "Two-way international trade between Nepal and global markets: cooperation models, sourcing, import and export coordination and DAI Trade Hub's coordination role.",
-});
+export const generateMetadata = cmsMetadata("globalTradePage", "/global-trade");
 
-export default function GlobalTradePage() {
+export default async function GlobalTradePage() {
+  const p = await getPage("globalTradePage");
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Global Trade", path: "/global-trade" }])} />
-      <PageHero
-        eyebrow="Global trade"
-        title="Global Trade & Business Cooperation"
-        subtitle="Creating New Opportunities Through Two-Way International Trade."
-        photo={PHOTOS.coffee}
-      />
+      <PageHero {...p.hero} />
 
       <Section>
-        <Heading
-          eyebrow="Two-way trade"
-          title="Bridging Business Opportunities"
-          intro="DAI Trade Hub aims to facilitate two-way trading opportunities by connecting Nepalese suppliers with global buyers and introducing selected international products to the Nepalese market."
-        />
+        <Heading eyebrow={p.twoWay.eyebrow} title={p.twoWay.title} intro={p.twoWay.intro} />
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           <div className="rounded-sm bg-cream p-8 sm:p-10">
-            <p className="eyebrow">Export</p>
-            <h3 className="mt-2 text-2xl">From Nepal</h3>
-            <div className="mt-6"><CheckList items={FROM_NEPAL} /></div>
+            <p className="eyebrow">{p.twoWay.fromEyebrow}</p>
+            <h3 className="mt-2 text-2xl">{p.twoWay.fromTitle}</h3>
+            <div className="mt-6"><CheckList items={p.twoWay.fromNepal} /></div>
           </div>
           <div className="rounded-sm bg-ink p-8 text-white sm:p-10">
-            <p className="eyebrow !text-gold">Import</p>
-            <h3 className="mt-2 text-2xl !text-white">To Nepal</h3>
+            <p className="eyebrow !text-gold">{p.twoWay.toEyebrow}</p>
+            <h3 className="mt-2 text-2xl !text-white">{p.twoWay.toTitle}</h3>
             <ul className="mt-6 grid gap-3">
-              {TO_NEPAL.map((i) => (
+              {p.twoWay.toNepal.map((i) => (
                 <li key={i} className="border-b border-white/10 pb-3 text-white/85">{i}</li>
               ))}
             </ul>
@@ -47,9 +34,9 @@ export default function GlobalTradePage() {
       <Section tone="cream">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <Heading eyebrow="How we cooperate" title="Business Cooperation Models" />
+            <Heading eyebrow={p.models.eyebrow} title={p.models.title} />
             <ol className="mt-8 divide-y divide-line border-y border-line">
-              {COOPERATION_MODELS.map((m, i) => (
+              {p.models.items.map((m, i) => (
                 <li key={m} className="flex items-baseline gap-5 py-4">
                   <span className="font-heading text-gold-deep">{String(i + 1).padStart(2, "0")}</span>
                   <span className="text-lg text-ink">{m}</span>
@@ -58,23 +45,15 @@ export default function GlobalTradePage() {
             </ol>
           </div>
           <div>
-            <Heading eyebrow="What we do" title="Our Coordination Role" />
-            <div className="mt-8"><CheckList items={COORDINATION_ROLE} /></div>
-            <p className="mt-6 text-sm leading-relaxed text-muted">
-              Freight, customs brokerage and similar regulated services are carried out by licensed service providers;
-              DAI Trade Hub coordinates the commercial and documentation side with them.
-            </p>
-            <Photo photo={PHOTOS.packaging} className="mt-8 aspect-[16/9]" sizes="(min-width: 1024px) 50vw, 100vw" />
+            <Heading eyebrow={p.role.eyebrow} title={p.role.title} />
+            <div className="mt-8"><CheckList items={p.role.items} /></div>
+            <p className="mt-6 text-sm leading-relaxed text-muted">{p.role.note}</p>
+            <Photo photo={p.role.photo} className="mt-8 aspect-[16/9]" sizes="(min-width: 1024px) 50vw, 100vw" />
           </div>
         </div>
       </Section>
 
-      <CtaBand
-        title="Let's Build a Stronger Trade Relationship."
-        text="Tell us whether you are buying from Nepal, selling into Nepal, or exploring a longer-term cooperation."
-        primary={{ label: "Start a Trade Inquiry", href: "/contact?type=Export%20Inquiry" }}
-        secondary={{ label: "Explore Products", href: "/products" }}
-      />
+      <CtaBand {...p.cta} />
     </>
   );
 }
