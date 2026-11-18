@@ -35,14 +35,19 @@ const client = cmsEnabled
 async function cmsFetch<T>(query: string, params: QueryParams = {}, { stega = true } = {}): Promise<T | null> {
   if (!client) return null;
   const isDraft = (await draftMode()).isEnabled && Boolean(readToken);
-  const raw = isDraft
-    ? await client.fetch(query, params, {
+  // A Sanity outage or bad config must not take the site down: fall back to the approved defaults.
+  const raw = await (isDraft
+    ? client.fetch(query, params, {
         perspective: "drafts",
         token: readToken,
         stega: stega && Boolean(studioUrl),
         cache: "no-store",
       })
-    : await client.fetch(query, params, { next: { tags: [CMS_TAG], revalidate: 3600 } });
+    : client.fetch(query, params, { next: { tags: [CMS_TAG], revalidate: 3600 } })
+  ).catch((err) => {
+    console.error("Sanity fetch failed, using built-in content", err instanceof Error ? err.message : err);
+    return null;
+  });
   return normalize(raw, projectId, dataset) as T | null;
 }
 
