@@ -45,8 +45,11 @@ export type SiteSettings = {
   phoneIntl: string;
   email: string;
   tradeEmail: string;
+  phoneNote: string;
   headerPrimaryCta: Cta;
   headerSecondaryCta: Cta;
+  navigation: Cta[];
+  footer: { columns: { title: string; links: Cta[] }[]; contactTitle: string; copyright: string; legalLinks: Cta[] };
   ogImage?: Photo | null;
 };
 
@@ -58,7 +61,7 @@ export type HomePage = {
   categories: Heading & { cta: Cta };
   globalTrade: Heading & { cta: Cta };
   privateLabel: Heading & { capabilities: string[]; exampleTitle: string; exampleText: string; photo: Photo; cta: Cta };
-  process: Heading & { steps: Card[] };
+  process: Heading & { stepLabel: string; steps: Card[] };
   why: Heading & { items: string[] };
   partnership: Heading & { paragraphs: string[]; photo: Photo; primaryCta: Cta; secondaryCta: Cta };
   finalCta: CtaBand;
@@ -68,11 +71,14 @@ export type AboutPage = {
   seo: Seo;
   hero: Hero;
   who: Heading & { paragraphs: string[]; photo: Photo };
+  visionLabel: string;
   vision: string;
+  missionLabel: string;
   mission: string;
   philosophy: Heading & { text: string };
   valuesTitle: string;
   values: string[];
+  commitmentLabel: string;
   commitment: string;
   cta: CtaBand;
 };
@@ -82,14 +88,21 @@ export type ProductsPage = {
   hero: Hero;
   heroCta: Cta;
   intro: Heading;
+  availabilityLabel: string;
   availabilityNote: string;
+  statusLabels: Record<"available" | "onRequest" | "inDevelopment", string>;
+  detailLabels: Record<
+    "origin" | "specifications" | "packaging" | "moq" | "certifications" | "supplyAvailability" | "exportStatus" | "moqPackaging" | "confirmedPerInquiry",
+    string
+  >;
+  inquireLabel: string;
   cta: CtaBand;
 };
 
 export type GlobalTradePage = {
   seo: Seo;
   hero: Hero;
-  twoWay: Heading & { fromNepal: string[]; toNepal: string[] };
+  twoWay: Heading & { fromEyebrow: string; fromTitle: string; fromNepal: string[]; toEyebrow: string; toTitle: string; toNepal: string[] };
   models: Heading & { items: string[] };
   role: Heading & { items: string[]; note: string; photo: Photo };
   cta: CtaBand;
@@ -104,7 +117,7 @@ export type RetailBrandingPage = {
   cta: CtaBand;
 };
 
-export type ServicesPage = { seo: Seo; hero: Hero; intro: Heading; cta: CtaBand };
+export type ServicesPage = { seo: Seo; hero: Hero; intro: Heading; deliveryLabels: Record<Service["delivery"], string>; cta: CtaBand };
 
 export type PartnershipsPage = {
   seo: Seo;
@@ -119,9 +132,36 @@ export type ContactPage = {
   seo: Seo;
   hero: Hero;
   infoTitle: string;
+  phoneLabel: string;
+  generalEmailLabel: string;
+  tradeEmailLabel: string;
   formTitle: string;
   successTitle: string;
   successMessage: string;
+  form: ContactFormCopy;
+};
+
+// Visible wording only. Field names, limits and validation messages stay in lib/inquiry.ts.
+export type ContactFormCopy = {
+  requiredNote: string;
+  nameLabel: string;
+  companyLabel: string;
+  countryLabel: string;
+  emailLabel: string;
+  phoneLabel: string;
+  inquiryTypeLabel: string;
+  inquiryTypePlaceholder: string;
+  interestLabel: string;
+  quantityLabel: string;
+  optionalNote: string;
+  messageLabel: string;
+  consentText: string;
+  consentLinkLabel: string;
+  submitLabel: string;
+  sendingLabel: string;
+  sendAnotherLabel: string;
+  errorEmailPrompt: string;
+  networkError: string;
 };
 
 export type PageDocs = {

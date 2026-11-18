@@ -107,11 +107,11 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="rounded-sm border border-line bg-white p-8">
-              <h3 className="text-xl">From Nepal</h3>
+              <h3 className="text-xl">{trade.twoWay.fromTitle}</h3>
               <div className="mt-5"><CheckList items={trade.twoWay.fromNepal} /></div>
             </div>
             <div className="rounded-sm border border-line bg-white p-8">
-              <h3 className="text-xl">To Nepal</h3>
+              <h3 className="text-xl">{trade.twoWay.toTitle}</h3>
               <div className="mt-5"><CheckList items={trade.twoWay.toNepal} /></div>
             </div>
           </div>
@@ -140,7 +140,7 @@ export default async function HomePage() {
         <ol className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {p.process.steps.map((step, i) => (
             <li key={step.title} className="border-t border-ink/15 pt-6">
-              <p className="eyebrow">Step {String(i + 1).padStart(2, "0")}</p>
+              <p className="eyebrow">{p.process.stepLabel} {String(i + 1).padStart(2, "0")}</p>
               <h3 className="mt-2 text-xl">{step.title}</h3>
               <p className="mt-2 leading-relaxed text-muted">{step.text}</p>
             </li>

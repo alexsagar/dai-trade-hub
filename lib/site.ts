@@ -14,16 +14,8 @@ export const COMPANY = SITE_SETTINGS;
 
 export const telHref = (phoneIntl: string) => `tel:${phoneIntl.replace(/[^+\d]/g, "")}`;
 
-export const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Products", href: "/products" },
-  { label: "Global Trade", href: "/global-trade" },
-  { label: "Retail Branding", href: "/retail-branding" },
-  { label: "Services", href: "/services" },
-  { label: "Partnerships", href: "/partnerships" },
-  { label: "Contact Us", href: "/contact" },
-] as const;
+// Built-in page list for the sitemap and 404 page. The header menu reads the editable copy.
+export const NAV_LINKS = SITE_SETTINGS.navigation;
 
 export const OG_IMAGE = { url: "/og-image.jpg", width: 1200, height: 630, alt: "DAI Trade Hub — international trading and business development" };
 

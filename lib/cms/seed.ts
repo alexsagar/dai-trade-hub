@@ -13,6 +13,9 @@ const slugify = (s: string) => s.toLowerCase().replace(/&/g, " ").replace(/[^a-z
 // Valid LexoRank values so @sanity/orderable-document-list can reorder seeded items later.
 export const rank = (i: number) => `0|${(100000 + i * 1000).toString(36).padStart(6, "0")}:`;
 
+// Schema type of an object inside an array (see studio/schemaTypes).
+const itemType = (o: object) => ("links" in o ? "footerColumn" : "href" in o ? "cta" : "card");
+
 /** assetIds maps a local photo path (/images/photos/x.jpg) to an uploaded Sanity asset id. */
 export function toSanity(value: unknown, assetIds: Record<string, string>, key = "k"): unknown {
   if (isPhoto(value)) {
@@ -24,7 +27,7 @@ export function toSanity(value: unknown, assetIds: Record<string, string>, key =
   if (Array.isArray(value)) {
     return value.map((v, i) => {
       const out = toSanity(v, assetIds, `${key}${i}`);
-      return out && typeof out === "object" ? { _key: `${key}${i}`, ...out } : out;
+      return out && typeof out === "object" ? { _key: `${key}${i}`, _type: itemType(out), ...out } : out;
     });
   }
   if (value && typeof value === "object") {
@@ -44,6 +47,28 @@ export function localPhotos(): Photo[] {
   };
   walk([PAGES, SITE_SETTINGS, PRODUCT_CATEGORIES]);
   return [...found.values()];
+}
+
+// Fields added after the first seed. `--fill-missing` writes only these paths, and only where
+// they are empty, so content already edited in the Studio is never overwritten.
+export const ADDED_FIELDS: Record<string, string[]> = {
+  siteSettings: ["phoneNote", "navigation", "footer"],
+  homePage: ["process.stepLabel"],
+  aboutPage: ["visionLabel", "missionLabel", "commitmentLabel"],
+  productsPage: ["availabilityLabel", "statusLabels", "detailLabels", "inquireLabel"],
+  globalTradePage: ["twoWay.fromEyebrow", "twoWay.fromTitle", "twoWay.toEyebrow", "twoWay.toTitle"],
+  servicesPage: ["deliveryLabels"],
+  contactPage: ["phoneLabel", "generalEmailLabel", "tradeEmailLabel", "form"],
+};
+
+/** setIfMissing values per document id, taken from the seed documents. */
+export function addedFieldValues(docs: SeedDoc[]): Record<string, Record<string, unknown>> {
+  const get = (o: unknown, path: string) => path.split(".").reduce((v, k) => (v as Record<string, unknown>)?.[k], o);
+  return Object.fromEntries(
+    docs
+      .filter((d) => ADDED_FIELDS[d._id])
+      .map((d) => [d._id, Object.fromEntries(ADDED_FIELDS[d._id].map((p) => [p, get(d, p)]))]),
+  );
 }
 
 export function seedDocuments(assetIds: Record<string, string>): SeedDoc[] {

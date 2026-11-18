@@ -26,11 +26,11 @@ export default async function AboutPage() {
       <Section tone="cream">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-sm border border-line bg-white p-8 sm:p-10">
-            <p className="eyebrow">Our vision</p>
+            <p className="eyebrow">{p.visionLabel}</p>
             <p className="mt-4 font-heading text-2xl leading-snug text-ink">{p.vision}</p>
           </div>
           <div className="rounded-sm border border-line bg-white p-8 sm:p-10">
-            <p className="eyebrow">Our mission</p>
+            <p className="eyebrow">{p.missionLabel}</p>
             <p className="mt-4 font-heading text-2xl leading-snug text-ink">{p.mission}</p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export default async function AboutPage() {
 
       <Section tone="cream">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow">Our commitment</p>
+          <p className="eyebrow">{p.commitmentLabel}</p>
           <p className="mt-4 font-heading text-2xl leading-snug text-ink sm:text-3xl">{p.commitment}</p>
         </div>
       </Section>

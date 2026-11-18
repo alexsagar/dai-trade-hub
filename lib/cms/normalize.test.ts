@@ -86,3 +86,15 @@ test("seed documents round-trip back to the approved content", async () => {
   assert.equal(about.hero.photo.alt, PAGES.aboutPage.hero.photo.alt);
   assert.match(about.hero.photo.src, /^https:\/\/cdn\.sanity\.io\/images\/p\/development\//);
 });
+
+test("--fill-missing only targets new fields, and each has a seed value", async () => {
+  const { ADDED_FIELDS, addedFieldValues, localPhotos, seedDocuments } = await import("./seed.ts");
+  const values = addedFieldValues(seedDocuments(Object.fromEntries(localPhotos().map((p) => [p.src, "unused"]))));
+  assert.deepEqual(Object.keys(values).sort(), Object.keys(ADDED_FIELDS).sort());
+  for (const [id, fields] of Object.entries(values)) {
+    for (const [path, v] of Object.entries(fields)) assert.ok(v != null && v !== "", `${id}.${path}`);
+  }
+  const nav = values.siteSettings.navigation as { _type: string; href: string }[];
+  assert.equal(nav[0]._type, "cta");
+  assert.equal(nav.length, 8);
+});

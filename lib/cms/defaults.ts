@@ -17,12 +17,6 @@ export const PHOTOS = {
   kathmandu: { src: "/images/photos/kathmandu.jpg", width: 1600, height: 1200, alt: "View across the Kathmandu Valley from the Chandragiri hills", credit: "Saddam Hussain Ansari", licence: "CC BY 4.0", sourceUrl: "https://commons.wikimedia.org/wiki/File:Panoramic_view_of_Kathmandu_Valley_from_the_Chandragiri_Cable_Car_(9).jpg" },
 } satisfies Record<string, T.Photo>;
 
-export const STATUS_LABEL: Record<T.SourcingStatus, string> = {
-  available: "Available",
-  "on-request": "Sourcing on request",
-  "in-development": "Under development",
-};
-
 export const SITE_SETTINGS: T.SiteSettings = {
   name: "DAI Trade Hub Pvt. Ltd.",
   shortName: "DAI Trade Hub",
@@ -38,8 +32,55 @@ export const SITE_SETTINGS: T.SiteSettings = {
   phoneIntl: "+977-1-5107439",
   email: "info@dainepal.com",
   tradeEmail: "trade@dainepal.com",
+  phoneNote: "(Nepal)",
   headerPrimaryCta: { label: "Become a Partner", href: "/partnerships" },
   headerSecondaryCta: { label: "Explore Products", href: "/products" },
+  navigation: [
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about" },
+    { label: "Products", href: "/products" },
+    { label: "Global Trade", href: "/global-trade" },
+    { label: "Retail Branding", href: "/retail-branding" },
+    { label: "Services", href: "/services" },
+    { label: "Partnerships", href: "/partnerships" },
+    { label: "Contact Us", href: "/contact" },
+  ],
+  footer: {
+    columns: [
+      {
+        title: "Company",
+        links: [
+          { label: "About Us", href: "/about" },
+          { label: "Partnership Opportunities", href: "/partnerships" },
+          { label: "Contact Us", href: "/contact" },
+        ],
+      },
+      {
+        title: "Trading Services",
+        links: [
+          { label: "All Services", href: "/services" },
+          { label: "Global Trade", href: "/global-trade" },
+          { label: "Retail Branding & Private Label", href: "/retail-branding" },
+        ],
+      },
+      {
+        title: "Product Categories",
+        links: [
+          { label: "Himalayan Tea & Coffee", href: "/products#himalayan-tea-coffee" },
+          { label: "Herbs & Spices", href: "/products#herbs-spices" },
+          { label: "Handmade & Handicrafts", href: "/products#handmade-handicrafts" },
+          { label: "Pashmina & Textiles", href: "/products#pashmina-textile-products" },
+        ],
+      },
+    ],
+    contactTitle: "Contact",
+    copyright: "All rights reserved.",
+    legalLinks: [
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Image Credits", href: "/image-credits" },
+    ],
+  },
   ogImage: null,
 };
 
@@ -136,6 +177,7 @@ export const PAGES: T.PageDocs = {
     process: {
       eyebrow: "Our business process",
       title: "From Business Idea to Market Opportunity",
+      stepLabel: "Step",
       steps: [
         { title: "Understand Requirements", text: "We understand the buyer's needs, product specifications, target market, and business objectives." },
         { title: "Identify Suppliers", text: "We coordinate with potential manufacturers, producers, and suppliers." },
@@ -182,6 +224,9 @@ export const PAGES: T.PageDocs = {
       ],
       photo: PHOTOS.tea,
     },
+    visionLabel: "Our vision",
+    missionLabel: "Our mission",
+    commitmentLabel: "Our commitment",
     vision: "To become a trusted international trading partner connecting Nepal and global markets.",
     mission: "To develop reliable business connections, identify quality products, coordinate efficient supply channels, and create sustainable opportunities for our business partners.",
     philosophy: {
@@ -209,8 +254,22 @@ export const PAGES: T.PageDocs = {
       title: "Categories we explore with buyers",
       intro: "We connect international buyers with potential suppliers across the categories below. Specific products, packaging, minimum order quantities and supply availability are confirmed per inquiry.",
     },
+    availabilityLabel: "About availability:",
     availabilityNote:
       "Categories listed here are sourcing opportunities, not a statement of ready stock. Each is marked available, sourcing on request or under development. Certifications, MOQ, supply capacity and export readiness are shared only once confirmed with the relevant supplier.",
+    statusLabels: { available: "Available", onRequest: "Sourcing on request", inDevelopment: "Under development" },
+    detailLabels: {
+      origin: "Origin",
+      specifications: "Specifications",
+      packaging: "Packaging",
+      moq: "Minimum order",
+      certifications: "Certifications",
+      supplyAvailability: "Supply availability",
+      exportStatus: "Export status",
+      moqPackaging: "MOQ & packaging",
+      confirmedPerInquiry: "Confirmed per inquiry",
+    },
+    inquireLabel: "Inquire about",
     cta: {
       title: "Looking for a specific product?",
       text: "Share your specifications, target market and estimated quantities. We will coordinate with potential suppliers and respond with what can be confirmed.",
@@ -225,7 +284,11 @@ export const PAGES: T.PageDocs = {
       eyebrow: "Two-way trade",
       title: "Bridging Business Opportunities",
       intro: "DAI Trade Hub aims to facilitate two-way trading opportunities by connecting Nepalese suppliers with global buyers and introducing selected international products to the Nepalese market.",
+      fromEyebrow: "Export",
+      fromTitle: "From Nepal",
       fromNepal: FROM_NEPAL,
+      toEyebrow: "Import",
+      toTitle: "To Nepal",
       toNepal: TO_NEPAL,
     },
     models: { eyebrow: "How we cooperate", title: "Business Cooperation Models", items: ["Direct Import & Export", "Product Sourcing Agreements", "Exclusive Distribution", "Private-Label Projects", "Joint Product Development", "Strategic Business Partnerships"] },
@@ -296,6 +359,7 @@ export const PAGES: T.PageDocs = {
       title: "Eight service areas",
       intro: "Each service notes how it is delivered. Where an activity requires specialist or licensed providers — such as freight, customs clearance, manufacturing or packaging production — DAI Trade Hub coordinates the work and the provider performs it.",
     },
+    deliveryLabels: { direct: "Coordinated by DAI Trade Hub", partners: "Delivered with external providers" },
     cta: {
       title: "Discuss your requirements",
       text: "Tell us which service you need and what you want to achieve. We will explain what we coordinate directly and which partners would be involved.",
@@ -339,8 +403,32 @@ export const PAGES: T.PageDocs = {
       photo: PHOTOS.kathmandu,
     },
     infoTitle: "Contact Information",
+    phoneLabel: "Phone",
+    generalEmailLabel: "General inquiries",
+    tradeEmailLabel: "Trade inquiries",
     formTitle: "Send a Business Inquiry",
     successTitle: "Inquiry sent",
     successMessage: "Thank you for contacting DAI Trade Hub. Your inquiry has been received. Our team will review your message and respond as soon as possible.",
+    form: {
+      requiredNote: "Fields marked * are required.",
+      nameLabel: "Full Name",
+      companyLabel: "Company Name",
+      countryLabel: "Country",
+      emailLabel: "Email Address",
+      phoneLabel: "Phone Number",
+      inquiryTypeLabel: "Inquiry Type",
+      inquiryTypePlaceholder: "Select an inquiry type",
+      interestLabel: "Product or Service Interest",
+      quantityLabel: "Estimated Order Quantity",
+      optionalNote: "(optional)",
+      messageLabel: "Message",
+      consentText: "I agree that DAI Trade Hub may use the details I provide to respond to this inquiry, as described in the",
+      consentLinkLabel: "Privacy Policy",
+      submitLabel: "Send Business Inquiry",
+      sendingLabel: "Sending…",
+      sendAnotherLabel: "Send another inquiry",
+      errorEmailPrompt: "You can also email",
+      networkError: "Network error — your inquiry was not sent.",
+    },
   },
 };

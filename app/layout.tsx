@@ -77,7 +77,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Skip to content
         </a>
         <JsonLd data={orgJsonLd(cleanSettings)} />
-        <Header primaryCta={settings.headerPrimaryCta} secondaryCta={settings.headerSecondaryCta} />
+        <Header
+          primaryCta={settings.headerPrimaryCta}
+          secondaryCta={settings.headerSecondaryCta}
+          links={settings.navigation}
+          homeLabel={`${cleanSettings.shortName} home`}
+        />
         <main id="main">{children}</main>
         <Footer />
         {isDraft && (

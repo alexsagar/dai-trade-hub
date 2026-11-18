@@ -15,13 +15,13 @@ export default async function GlobalTradePage() {
         <Heading eyebrow={p.twoWay.eyebrow} title={p.twoWay.title} intro={p.twoWay.intro} />
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           <div className="rounded-sm bg-cream p-8 sm:p-10">
-            <p className="eyebrow">Export</p>
-            <h3 className="mt-2 text-2xl">From Nepal</h3>
+            <p className="eyebrow">{p.twoWay.fromEyebrow}</p>
+            <h3 className="mt-2 text-2xl">{p.twoWay.fromTitle}</h3>
             <div className="mt-6"><CheckList items={p.twoWay.fromNepal} /></div>
           </div>
           <div className="rounded-sm bg-ink p-8 text-white sm:p-10">
-            <p className="eyebrow !text-gold">Import</p>
-            <h3 className="mt-2 text-2xl !text-white">To Nepal</h3>
+            <p className="eyebrow !text-gold">{p.twoWay.toEyebrow}</p>
+            <h3 className="mt-2 text-2xl !text-white">{p.twoWay.toTitle}</h3>
             <ul className="mt-6 grid gap-3">
               {p.twoWay.toNepal.map((i) => (
                 <li key={i} className="border-b border-white/10 pb-3 text-white/85">{i}</li>
