@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local browser test artifacts
+/.playwright-mcp
+
+# Sanity Studio
+/studio/node_modules
+/studio/dist
+/studio/.sanity
+!.env.example

@@ -1,0 +1,60 @@
+import type { Metadata } from "next";
+import { SITE_SETTINGS } from "./cms/defaults";
+import type { Photo } from "./cms/types";
+
+// Production URL is configurable; falls back to the current Vercel production domain.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://dai-trade-hub.vercel.app").replace(/\/$/, "");
+
+// Client-review phase: the whole site is noindex everywhere, including production.
+// Indexing needs an explicit opt-in (SITE_INDEXING=enabled on the production deployment);
+// a routine redeploy can never turn it on. Kept in sync with next.config.mjs.
+export const IS_INDEXABLE = process.env.SITE_INDEXING === "enabled" && process.env.VERCEL_ENV === "production";
+
+// Static company details: used where content must not depend on the CMS (API routes,
+// legal pages). Public pages read the editable copy via getSiteSettings().
+export const COMPANY = SITE_SETTINGS;
+
+export const telHref = (phoneIntl: string) => `tel:${phoneIntl.replace(/[^+\d]/g, "")}`;
+
+// Built-in page list for the sitemap and 404 page. The header menu reads the editable copy.
+export const NAV_LINKS = SITE_SETTINGS.navigation;
+
+export const OG_IMAGE = { url: "/og-image.jpg", width: 1200, height: 630, alt: "DAI Trade Hub — international trading and business development" };
+
+export function pageMetadata({
+  path,
+  title,
+  description,
+  noindex = false,
+  ogImage,
+}: {
+  path: string;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  ogImage?: Photo | null;
+}): Metadata {
+  const image = ogImage ? { url: ogImage.src, width: ogImage.width, height: ogImage.height, alt: ogImage.alt } : OG_IMAGE;
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    // openGraph/twitter objects replace (not merge with) the layout's, so repeat the shared fields.
+    openGraph: { title, description, url: path, type: "website", siteName: COMPANY.shortName, locale: "en_US", images: [image] },
+    twitter: { card: "summary_large_image", title, description, images: [image.url] },
+    ...(noindex && { robots: { index: false, follow: true } }),
+  };
+}
+
+export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [{ name: "Home", path: "/" }, ...items].map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.path === "/" ? "" : item.path}`,
+    })),
+  };
+}

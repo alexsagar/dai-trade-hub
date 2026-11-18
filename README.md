@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DAI Trade Hub website
 
-## Getting Started
+Corporate site for DAI Trade Hub Pvt. Ltd. — Next.js 16 (App Router), Tailwind CSS 4, deployed on Vercel.
+Approved copy comes from `DAI_TRADE_HUB_CONTENT_SOURCE.md`; page text lives in `lib/content.ts`.
 
-First, run the development server:
+## Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev        # local dev server
+npm run build      # production build
+npm run typecheck  # tsc --noEmit
+npm test           # node:test unit tests (inquiry validation)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment variables
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical domain. Defaults to `https://dai-trade-hub.vercel.app`. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` | Mail server for the inquiry form. Required; without them the form reports that the inquiry was **not** sent. |
+| `SMTP_FROM_EMAIL` | Sender address (defaults to `SMTP_USER`). |
+| `CONTACT_TO_EMAIL` / `TRADE_TO_EMAIL` | Recipients. Default `info@dainepal.com` / `trade@dainepal.com` (import, export, sourcing and distribution inquiries go to trade). Set on the server only: the emails shown in Sanity are display text and never decide where inquiries are delivered. |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Content added to the CMS after the first seed can be filled into an existing dataset without touching edited content:
+`node --env-file=.env.local scripts/seed-sanity.ts --fill-missing` (sets only the fields listed in `ADDED_FIELDS` in `lib/cms/seed.ts`, only where empty).
 
-## Learn More
+### Search indexing (currently OFF — client review)
 
-To learn more about Next.js, take a look at the following resources:
+Every page, on every deployment, is `noindex`: `<meta name="robots" content="noindex, nofollow">`, an
+`X-Robots-Tag: noindex, nofollow` header, an empty sitemap, and a `robots.txt` that still allows crawling so search
+engines can read the noindex. Redeploying never changes this.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To enable indexing at public launch (not before):
+1. Set `NEXT_PUBLIC_SITE_URL` to the final domain.
+2. In Vercel → Settings → Environment Variables, add `SITE_INDEXING` = `enabled` for **Production** only.
+3. Redeploy production, then check that `curl -I https://<domain>/` has no `X-Robots-Tag` and `/robots.txt` lists the sitemap.
+4. Submit the sitemap in Google Search Console.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Remove the variable (and redeploy) to switch back to noindex. Preview deployments stay noindex either way.
 
-## Deploy on Vercel
+## Contact form protection
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Server-side validation and length limits, HTML escaping, newline stripping in single-line fields, a honeypot field,
+a minimum fill time, and a per-instance rate limit (5 per 10 minutes per IP). For stronger protection, add a Vercel
+Firewall rate-limit rule on `/api/contact`.

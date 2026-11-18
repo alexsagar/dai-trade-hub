@@ -1,114 +1,96 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Source_Serif_4 } from "next/font/google";
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import DraftModeBanner from "@/components/DraftModeBanner";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { JsonLd } from "@/components/ui";
+import { getSiteSettings } from "@/lib/cms";
+import type { SiteSettings } from "@/lib/cms/types";
+import { IS_INDEXABLE, OG_IMAGE, SITE_URL } from "@/lib/site";
 
-export const viewport: Viewport = {
-  themeColor: "#1B4332",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-};
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const serif = Source_Serif_4({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://daitradehub.com"), // Example domain
-  title: {
-    default: "DAI Trade Hub — Agricultural Trading & Industrial Solutions",
-    template: "%s | DAI Trade Hub",
-  },
-  description:
-    "DAI Trade Hub is a leading agricultural trading and industrial company specializing in agricultural inputs, food processing, warehousing, import-export, and farmer support services across Nepal.",
-  keywords: [
-    "agriculture",
-    "trading",
-    "fertilizers",
-    "food processing",
-    "warehousing",
-    "cold storage",
-    "import export",
-    "Nepal",
-    "DAI Trade Hub",
-  ],
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  openGraph: {
-    title: "DAI Trade Hub — Connecting Agriculture, Trade & Sustainable Growth",
-    description:
-      "Leading agricultural trading and industrial company providing comprehensive solutions from farm to market in Nepal.",
-    url: "https://daitradehub.com",
-    siteName: "DAI Trade Hub",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: "/images/hero-agriculture.png",
-        width: 1200,
-        height: 630,
-        alt: "DAI Trade Hub",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "DAI Trade Hub — Agricultural Trading Solutions",
-    description: "Leading agricultural trading and industrial company in Nepal.",
-    images: ["/images/hero-agriculture.png"],
-  },
-};
+export const viewport: Viewport = { themeColor: "#0f1d2b" };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "DAI Trade Hub",
-    url: "https://daitradehub.com",
-    logo: "https://daitradehub.com/images/logo.png",
-    description: "Leading agricultural trading and industrial company in Nepal.",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Panchakanya Marga",
-      addressLocality: "Kathmandu",
-      postalCode: "44600",
-      addressCountry: "NP"
-    },
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "01-5107439",
-      contactType: "customer service"
-    }
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSiteSettings({ stega: false });
+  const og = s.ogImage ? { url: s.ogImage.src, width: s.ogImage.width, height: s.ogImage.height, alt: s.ogImage.alt } : OG_IMAGE;
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: `${s.shortName} | International Trading & Business Development, Nepal`, template: `%s | ${s.shortName}` },
+    description: s.description,
+    applicationName: s.shortName,
+    robots: IS_INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
+    openGraph: { type: "website", siteName: s.shortName, locale: "en_US", images: [og] },
+    twitter: { card: "summary_large_image", images: [og.url] },
   };
+}
 
+function orgJsonLd(s: SiteSettings) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: s.name,
+        alternateName: s.shortName,
+        url: SITE_URL,
+        logo: `${SITE_URL}/icon.png`,
+        description: s.description,
+        email: s.email,
+        telephone: s.phoneIntl,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: s.street,
+          addressLocality: s.city,
+          postalCode: s.postalCode,
+          addressCountry: s.countryCode,
+        },
+        contactPoint: [
+          { "@type": "ContactPoint", contactType: "customer service", email: s.email, telephone: s.phoneIntl },
+          { "@type": "ContactPoint", contactType: "sales", email: s.tradeEmail },
+        ],
+      },
+      { "@type": "WebSite", "@id": `${SITE_URL}/#website`, url: SITE_URL, name: s.shortName, publisher: { "@id": `${SITE_URL}/#organization` } },
+    ],
+  };
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const [settings, cleanSettings, { isEnabled: isDraft }] = await Promise.all([
+    getSiteSettings(),
+    getSiteSettings({ stega: false }), // structured data must not contain stega characters
+    draftMode(),
+  ]);
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
+    <html lang="en" className={`${inter.variable} ${serif.variable}`} data-scroll-behavior="smooth">
+      <body className="antialiased">
+        <a
+          href="#main"
+          className="sr-only z-[100] bg-gold px-4 py-2 font-semibold text-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        >
+          Skip to content
+        </a>
+        <JsonLd data={orgJsonLd(cleanSettings)} />
+        <Header
+          primaryCta={settings.headerPrimaryCta}
+          secondaryCta={settings.headerSecondaryCta}
+          links={settings.navigation}
+          homeLabel={`${cleanSettings.shortName} home`}
         />
-      </head>
-      <body className="antialiased bg-white text-dark">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <Navbar />
-        <main>{children}</main>
+        <main id="main">{children}</main>
         <Footer />
+        {isDraft && (
+          <>
+            <VisualEditing />
+            <DraftModeBanner />
+          </>
+        )}
       </body>
     </html>
   );

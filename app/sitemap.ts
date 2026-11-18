@@ -1,38 +1,11 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { IS_INDEXABLE, NAV_LINKS, SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://daitradehub.com";
-
-  return [
-    {
-      url: `${baseUrl}/`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/services`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/gallery`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.7,
-    },
-  ];
+  if (!IS_INDEXABLE) return []; // nothing to submit while the site is noindex
+  return NAV_LINKS.map(({ href }) => ({
+    url: `${SITE_URL}${href === "/" ? "" : href}`,
+    changeFrequency: "monthly",
+    priority: href === "/" ? 1 : 0.8,
+  }));
 }
